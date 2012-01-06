@@ -12,3 +12,5 @@ Collect points for greater accuracy.
 Include wind speed and direction (possibly get from weather api?)
 
 Select person to throw to by selecting on map
+
+Possible high score table? Week, Day and all time rankings?
