@@ -1,0 +1,5 @@
+App Plan
+
+Using multiple sensors.
+GPS/GSM for location.
+Rotation sensors, Accelerometers,
