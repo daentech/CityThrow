@@ -41,7 +41,7 @@ public class CityThrowActivity extends MapActivity implements LocationListener{
         mc.setCenter(p);
         mc.setZoom(14);
         
-        myLocationOverlay = new MyLocationOverlay(getResources().getDrawable(R.drawable.marker),this.getApplicationContext());
+        myLocationOverlay = new MyLocationOverlay(getResources().getDrawable(R.drawable.marker),this);
         myLocationOverlay.setMyLocation(p);
         List<Overlay> list = mv.getOverlays();
 
