@@ -76,7 +76,6 @@ public class MyLocationOverlay extends ItemizedOverlay<OverlayItem> {
     public void setMyLocation(GeoPoint p){
         OverlayItem item = new OverlayItem(p,"My Location", "I'm here!");
         
-
         item.setMarker(getMarker(R.drawable.mymarker));
         if (mOverlays.size() > 0){
             mOverlays.set(0, item);
@@ -91,7 +90,7 @@ public class MyLocationOverlay extends ItemizedOverlay<OverlayItem> {
 
         marker.setBounds(0, 0, marker.getIntrinsicWidth(),
                                             marker.getIntrinsicHeight());
-        boundCenter(marker);
+        boundCenterBottom(marker);
 
         return(marker);
     }
