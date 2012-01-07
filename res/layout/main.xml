@@ -9,6 +9,7 @@
                  android:layout_height="fill_parent"
                  android:apiKey="0nfHiY7D3-An44090mo14bKIAGpcb1JakOnSh0A"
                  android:id="@+id/mapview"
+                 android:clickable="true"
                  />
 
 </LinearLayout>
