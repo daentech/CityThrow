@@ -39,7 +39,10 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
         mv.setBuiltInZoomControls(true);
         
         LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 20.0f, this);
+        Location loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        
+        lat = (float) loc.getLatitude();
+        lng = (float) loc.getLongitude();
         
         p = new GeoPoint((int) (lat * 1000000), (int) (lng * 1000000));
         mv.setSatellite(true);
@@ -47,6 +50,8 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
         mc = mv.getController();
         mc.setCenter(p);
         mc.setZoom(14);
+        
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 20.0f, this);
         
         characters = new ArrayList<Character>();
         
@@ -88,13 +93,14 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
             p = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
             characters.get(0).updatePoint(p);
             myLocationOverlay.updateLocation(characters.get(0));
+            MapView mv = (MapView)findViewById(R.id.mapview);
+            mv.invalidate();
             if (getDistance(oldPosition) > 500)
                 addDummyPeople();
             mc.animateTo(p);
-            MapView mv = (MapView)findViewById(R.id.mapview);
-            mv.invalidate();
+            mv.setSatellite(false);
+            mv.preLoad();
         }
-        
     }
 
     public void setSelectedCharacter(Character c){

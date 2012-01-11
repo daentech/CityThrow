@@ -29,12 +29,18 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
     private boolean sensing = false;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
+    private Sensor mMagnet;
+    
+    private float[] mAccelV = null;
+    private float[] mMagnetV = null;
     
     @Override
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mMagnet = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        
         setContentView(R.layout.enemyinfo);
         //Get the character
         
@@ -75,15 +81,22 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         if(!sensing) return;
         switch(event.sensor.getType()){
         case Sensor.TYPE_ACCELEROMETER:
-            float v[] = event.values;
-            if(Math.abs(v[0]) > 1 || Math.abs(v[1]) > 1)
-                System.out.println("Accelerometer Changed: " + v[0] + "," + v[1] + "," + v[2]);
+            mAccelV = event.values;
+            //if(Math.abs(mAccelV[0]) > 1 || Math.abs(mAccelV[1]) > 1)
+            //    System.out.println("Accelerometer Changed: " + mAccelV[0] + "," + mAccelV[1] + "," + mAccelV[2]);
             break;
         case Sensor.TYPE_MAGNETIC_FIELD:
+        	mMagnetV = event.values;
             break;
         default:
             break;
         }
+        if(mAccelV == null || mMagnetV == null) return;
+        float R[] = new float[9];
+        float val[] = new float[3];
+        SensorManager.getRotationMatrix(R, null, mAccelV, mMagnetV);
+        val = SensorManager.getOrientation(R,val);
+        System.out.println("Orientation: " + val[0]);
     }
 
     public void onClick(View v) {
@@ -117,6 +130,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mMagnet, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     protected void onPause() {
