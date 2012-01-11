@@ -1,11 +1,8 @@
 package uk.co.daentech.citythrow;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
@@ -49,22 +46,6 @@ public class MyLocationOverlay extends ItemizedOverlay<OverlayItem> {
         return marker;
     }
 
-    /*@Override
-    public boolean onTouchEvent(MotionEvent event, MapView mapView) 
-    {   
-        //---when user lifts his finger---
-        if (event.getAction() == 1) {                
-            GeoPoint p = mapView.getProjection().fromPixels(
-                (int) event.getX(),
-                (int) event.getY());
-                Toast.makeText(mContext, 
-                    p.getLatitudeE6() / 1E6 + "," + 
-                    p.getLongitudeE6() /1E6 , 
-                    Toast.LENGTH_SHORT).show();
-        }                            
-        return false;
-    }*/
-
     @Override
     protected OverlayItem createItem(int i) {
         return mOverlays.get(i);
@@ -77,7 +58,7 @@ public class MyLocationOverlay extends ItemizedOverlay<OverlayItem> {
       mContext.setSelectedCharacter(c);
       AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
       dialog.setTitle(item.getTitle());
-      dialog.setMessage(item.getSnippet() + "\nHP: " + c.getHP() + "/100");
+      dialog.setMessage(item.getSnippet() + "\nHP: " + c.getHP() + "/100\nPosition: (" + c.getPoint().toString() + ")");
       if (c.getType() == Character.type.ME){
           // if me, do this
           dialog.setNegativeButton("Cancel", mContext);
@@ -118,6 +99,14 @@ public class MyLocationOverlay extends ItemizedOverlay<OverlayItem> {
         }
         
         mOverlays.set(i, item);
+        populate();
+    }
+
+    public void deleteEnemies() {
+        for (int i = 1; i < mOverlays.size(); i++){
+            mOverlays.remove(i);
+            CityThrowActivity.characters.remove(i);
+        }
         populate();
     }
 }

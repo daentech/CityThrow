@@ -2,13 +2,9 @@ package uk.co.daentech.citythrow;
 
 import java.util.Random;
 
-import uk.co.daentech.citythrow.Character.type;
-
-import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.location.Location;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
 
 /***
  * The character class. Stores both friend and foe.
@@ -19,21 +15,21 @@ import com.google.android.maps.ItemizedOverlay;
 
 public class Character {
 
+    private static final double SPREAD_RADIUS = 1E5;
     private int hp;
     private GeoPoint p;
     private String name, text;
     private static GeoPoint playerPosition;
     private int drawable;
-    private Context mContext;
     private type mType;
     
     public enum type { ME, FRIEND, FOE }
     
-    public Character (type t, String name, String text, GeoPoint p, int drawable, Context context){
+    public Character (type t, String name, String text, GeoPoint p, int drawable){
         
         mType = t;
         if (t == type.ME){
-            playerPosition = this.p;
+            Character.playerPosition = p;
         }
         
         if (p  == null){
@@ -41,10 +37,9 @@ public class Character {
             // If null, then we are generating a player rather than getting a real person from the web
             int lng, lat;
             Random rnd = new Random();
-            
-                lng = rnd.nextBoolean() ? playerPosition.getLongitudeE6() + (int)(rnd.nextFloat() * 400) : playerPosition.getLongitudeE6() - (int)(rnd.nextFloat() * 400);
-                lat = rnd.nextBoolean() ? playerPosition.getLatitudeE6() + (int)(rnd.nextFloat() * 400) : playerPosition.getLatitudeE6() - (int)(rnd.nextFloat() * 400);
-            this.p = new GeoPoint(lng,lat);
+            lng = rnd.nextBoolean() ? Character.playerPosition.getLongitudeE6() + (int)(rnd.nextFloat() * SPREAD_RADIUS) : Character.playerPosition.getLongitudeE6() - (int)(rnd.nextFloat() * SPREAD_RADIUS);
+            lat = rnd.nextBoolean() ? Character.playerPosition.getLatitudeE6() + (int)(rnd.nextFloat() * SPREAD_RADIUS) : Character.playerPosition.getLatitudeE6() - (int)(rnd.nextFloat() * SPREAD_RADIUS);
+            this.p = new GeoPoint(lat,lng);
         } else {
             this.p = p;
         }
@@ -53,7 +48,6 @@ public class Character {
         this.name = name;
         this.text = text;
         this.drawable = drawable;
-        this.mContext = context;
     }
     
     public GeoPoint getPoint(){
@@ -61,7 +55,10 @@ public class Character {
     }
     
     public void updatePoint(GeoPoint p){
+        if (this.mType == type.ME)
+            Character.playerPosition = p;
         this.p = p;
+        
     }
     
     public int getHP(){
@@ -86,5 +83,19 @@ public class Character {
 
     public type getType() {
         return this.mType;
+    }
+    
+    public double getDistanceTo(Character c){
+        GeoPoint enemyposition = this.getPoint();
+        GeoPoint userposition = c.getPoint();
+        Location userLoc = new Location("User");
+        userLoc.setLatitude(userposition.getLatitudeE6() / 1E6);
+        userLoc.setLongitude(userposition.getLongitudeE6() / 1E6);
+        Location enemyLoc = new Location("Enemy");
+        enemyLoc.setLatitude(enemyposition.getLatitudeE6() / 1E6);
+        enemyLoc.setLongitude(enemyposition.getLongitudeE6() / 1E6);
+        return userLoc.distanceTo(enemyLoc);
+        
+
     }
 }

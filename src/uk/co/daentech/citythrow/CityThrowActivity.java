@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -50,27 +51,32 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
         characters = new ArrayList<Character>();
         
         myLocationOverlay = new MyLocationOverlay(getResources().getDrawable(R.drawable.marker),this);
-        Character c = new Character(Character.type.ME, "This is my location", "I'm here!", p, R.drawable.mymarker, this);
+        Character c = new Character(Character.type.ME, "This is my location", "I'm here!", p, R.drawable.mymarker);
         characters.add(c);
         myLocationOverlay.addCharacter(c);
         
-        addDummyPeople(myLocationOverlay);
+        addDummyPeople();
         List<Overlay> list = mv.getOverlays();
 
         list.add(myLocationOverlay);        
     }
 
-	private MyLocationOverlay addDummyPeople(MyLocationOverlay overlay) {
+	private void addDummyPeople() {
+	    // If there are people, but the distance is too great then delete the people and start again
+	    if(myLocationOverlay.size() > 1){
+	        // We have numerous people
+            myLocationOverlay.deleteEnemies();
+	    }
         // This method creates dummy people to throw objects at
-        for (int i = 0; i < 10 - overlay.size(); i++){
-            
+        for (int i = 1; i < 11 - myLocationOverlay.size(); i++){
+            Character c = new Character(Character.type.FOE, "Enemy #" + i, "Enemy!", null, R.drawable.marker);
+            characters.add(c);
+            myLocationOverlay.addCharacter(c);
         }
-        return overlay;
     }
 
     @Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -78,11 +84,15 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
         if (location != null) {
             double lat = location.getLatitude();
             double lng = location.getLongitude();
-            p = new GeoPoint((int) (lat * 1000000), (int) (lng * 1000000));
+            GeoPoint oldPosition = p;
+            p = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
             characters.get(0).updatePoint(p);
             myLocationOverlay.updateLocation(characters.get(0));
+            if (getDistance(oldPosition) > 500)
+                addDummyPeople();
             mc.animateTo(p);
-            
+            MapView mv = (MapView)findViewById(R.id.mapview);
+            mv.invalidate();
         }
         
     }
@@ -114,10 +124,22 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
             // This is the attack button
             if (sSelectedCharacter.getType() == Character.type.FOE){
                 // Prepare attack
-                
+                startActivity(new Intent(this, ForceMeterActivity.class));
             }
             break;
         }
     }
-    
+    private double getDistance(GeoPoint oldPosition) {
+        GeoPoint enemyposition = oldPosition;
+        GeoPoint userposition = p;
+        Location userLoc = new Location("User");
+        userLoc.setLatitude(userposition.getLatitudeE6() / 1E6);
+        userLoc.setLongitude(userposition.getLongitudeE6() / 1E6);
+        Location enemyLoc = new Location("Enemy");
+        enemyLoc.setLatitude(enemyposition.getLatitudeE6() / 1E6);
+        enemyLoc.setLongitude(enemyposition.getLongitudeE6() / 1E6);
+        double distance = userLoc.distanceTo(enemyLoc);
+        
+        return distance;
+    }
 }
