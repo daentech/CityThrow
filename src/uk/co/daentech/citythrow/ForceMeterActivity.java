@@ -3,12 +3,14 @@ package uk.co.daentech.citythrow;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -26,6 +28,7 @@ import com.google.android.maps.GeoPoint;
 public class ForceMeterActivity extends Activity implements OnClickListener, SensorEventListener{
     
     private static final int DIALOG_SENSING_BEGUN = 0;
+	
     private Character mChar;
     private boolean sensing = false;
     private SensorManager mSensorManager;
@@ -34,13 +37,17 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
     private double mAngle;
     private ProgressBar angleBar;
     private ProgressDialog progressDialog;
-    private float lastAngle;
-    private TextView angleText;
-    private float[] angleHistory = new float[10];
-    private int angleIndex;
     
+    private TextView angleText;
+    
+    public static int sAttackForce;
+	public static float sAttackAngle;
+	
     private float[] mAccelV = null;
     private float[] mMagnetV = null;
+    private float maxForce = 0;
+
+	private float mAttackAngle;
     
     @Override
     public void onCreate(Bundle bundle){
@@ -113,13 +120,35 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         SensorManager.getRotationMatrix(R, null, mAccelV, mMagnetV);
         val = SensorManager.getOrientation(R,val);
         if (val[0] == 0.0) return;
-        //angleHistory[angleIndex++ % 10] = val[0];
+        else if (progressDialog != null && !progressDialog.isShowing()) Log.d("Orientation:",val[0] + "");
         
         double diffAngle = (( mAngle - val[0] + Math.PI ) %  2*Math.PI ) - Math.PI ;
         if (!sensing){
+        	mAttackAngle = val[0];
             angleBar.setProgress((int)(scaleAngle(diffAngle,1000)));
             angleText.setText("Angle Difference: " + diffAngle + " Value: " + angleBar.getProgress());
-            }
+        } else {
+        	// Check we have the dialog open
+        	if (progressDialog.isShowing()){
+        		float currForce = (mAccelV[0] * mAccelV[0] + mAccelV[1] * mAccelV[1] + mAccelV[2] * mAccelV[2])
+                / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+        		Log.d("CurrForce:", currForce + "");
+        		maxForce = Math.max(maxForce, currForce);
+        		if (maxForce > 5 && currForce < 2){
+        			// Assume swing finished
+        			progressDialog.setProgress((int)(1000/20 * maxForce));
+        			ForceMeterActivity.sAttackAngle = mAttackAngle;
+        			ForceMeterActivity.sAttackForce = progressDialog.getProgress();
+        			Intent mIntent = new Intent();
+        			mIntent.putExtra("AttackAngle", mAttackAngle);
+        			mIntent.putExtra("AttackForce", progressDialog.getProgress());
+        			progressDialog.dismiss();
+        			setResult(RESULT_OK, mIntent);
+        			this.finish();
+        		}
+        		
+        	}
+        }
     }
 
     public void onClick(View v) {
@@ -139,6 +168,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         
         switch(dialog){
         case DIALOG_SENSING_BEGUN:
+        	maxForce = 0;
             progressDialog = new ProgressDialog(this);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setMax(1000);

@@ -20,13 +20,17 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 public class CityThrowActivity extends MapActivity implements LocationListener, OnClickListener{
-    /** Called when the activity is first created. */
+    private static final int LAUNCH_ATTACK = 0;
+	/** Called when the activity is first created. */
     private MapController mc;
     private float lng, lat;
     private GeoPoint p;
     private MyLocationOverlay myLocationOverlay;
     public static Character sSelectedCharacter;
     public static ArrayList<Character> characters;
+    
+    private static float mAttackAngle;
+    private static int mAttackForce;
     
     
     @Override
@@ -139,7 +143,7 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
             // This is the attack button
             if (sSelectedCharacter.getType() == Character.type.FOE){
                 // Prepare attack
-                startActivity(new Intent(this, ForceMeterActivity.class));
+                startActivityForResult(new Intent(this, ForceMeterActivity.class),LAUNCH_ATTACK);
             }
             break;
         }
@@ -157,4 +161,19 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
         
         return distance;
     }
+    
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == LAUNCH_ATTACK) {
+			if (resultCode == RESULT_CANCELED)
+				setTitle("OK");
+			else if (resultCode == RESULT_OK) {
+				Bundle extras = data.getExtras();
+				if (extras != null) {
+					mAttackAngle = extras.getFloat("AttackAngle");
+					mAttackForce = extras.getInt("AttackForce");
+				}
+			}
+		}
+	}
 }
