@@ -15,7 +15,7 @@ import com.google.android.maps.GeoPoint;
 
 public class Character {
 
-    private static final double SPREAD_RADIUS = 80000;
+    private static final double SPREAD_RADIUS = 50000;
     private int hp;
     private GeoPoint p;
     private String name, text;

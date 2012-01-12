@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
@@ -30,6 +31,13 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private Sensor mMagnet;
+    private double mAngle;
+    private ProgressBar angleBar;
+    private ProgressDialog progressDialog;
+    private float lastAngle;
+    private TextView angleText;
+    private float[] angleHistory = new float[10];
+    private int angleIndex;
     
     private float[] mAccelV = null;
     private float[] mMagnetV = null;
@@ -46,15 +54,24 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         
         mChar = CityThrowActivity.sSelectedCharacter;
         
+        // Get the angle between the player and the enemy
+        Character player = CityThrowActivity.characters.get(0);
+        
+        double dlat = mChar.getPoint().getLatitudeE6() - player.getPoint().getLatitudeE6();
+        double dlon = mChar.getPoint().getLongitudeE6() - player.getPoint().getLongitudeE6();
+        mAngle = Math.atan2(dlat, dlon); // in radians
+        
         TextView tv = (TextView)findViewById(R.id.nameTextView);
         tv.setText("" + mChar.getName());
         tv = (TextView)findViewById(R.id.hpTextView);
         tv.setText(mChar.getHP() + "/100");
         tv = (TextView)findViewById(R.id.distanceTextView);
         tv.setText(getDistance());
+        angleText = (TextView)findViewById(R.id.angleText);
         
         Button btn = (Button)findViewById(R.id.btnAttackLaunch);
         btn.setOnClickListener(this);
+        angleBar = (ProgressBar)findViewById(R.id.directionProgress);
         
     }
 
@@ -78,7 +95,6 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
     }
 
     public void onSensorChanged(SensorEvent event) {
-        if(!sensing) return;
         switch(event.sensor.getType()){
         case Sensor.TYPE_ACCELEROMETER:
             mAccelV = event.values;
@@ -96,7 +112,14 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         float val[] = new float[3];
         SensorManager.getRotationMatrix(R, null, mAccelV, mMagnetV);
         val = SensorManager.getOrientation(R,val);
-        System.out.println("Orientation: " + val[0]);
+        if (val[0] == 0.0) return;
+        //angleHistory[angleIndex++ % 10] = val[0];
+        
+        double diffAngle = (( mAngle - val[0] + Math.PI ) %  2*Math.PI ) - Math.PI ;
+        if (!sensing){
+            angleBar.setProgress((int)(scaleAngle(diffAngle,1000)));
+            angleText.setText("Angle Difference: " + diffAngle + " Value: " + angleBar.getProgress());
+            }
     }
 
     public void onClick(View v) {
@@ -116,11 +139,11 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         
         switch(dialog){
         case DIALOG_SENSING_BEGUN:
-            ProgressDialog progressDialog;
             progressDialog = new ProgressDialog(this);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setMax(1000);
             progressDialog.setMessage("Force...");
-            progressDialog.setCancelable(false);
+            progressDialog.setCancelable(true);
             return progressDialog;
         default:
             return null;
@@ -137,4 +160,11 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         super.onPause();
         mSensorManager.unregisterListener(this);
     }
+    
+    private double scaleAngle(double a, int max){
+        double scalar = 1000/(2*Math.PI);
+        
+        return 500 + a * scalar;
+    }
+    
 }

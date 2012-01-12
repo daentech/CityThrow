@@ -41,8 +41,17 @@ public class CityThrowActivity extends MapActivity implements LocationListener, 
         LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         Location loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         
-        lat = (float) loc.getLatitude();
-        lng = (float) loc.getLongitude();
+        if (loc == null){
+            loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+        
+        if (loc == null){
+            lng = 51.4557f;
+            lat = -2.6028f;
+        } else {
+            lat = (float) loc.getLatitude();
+            lng = (float) loc.getLongitude();
+        }
         
         p = new GeoPoint((int) (lat * 1000000), (int) (lng * 1000000));
         mv.setSatellite(true);
