@@ -9,15 +9,6 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-            <!--<ProgressBar
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_span=""
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:max="1000"
-                android:progress="500"
-                android:id="@+id/directionProgress"
-                />-->
             <SeekBar
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -69,7 +60,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
             <TextView android:layout_width="fill_parent" android:text="Wind Speed: "/>
-            <TextView android:layout_width="fill_parent" android:id="@+id/windTextView" />
+            <ProgressBar
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:max="1000"
+                android:progress="500"
+                android:id="@+id/windProgress"
+                />
+            <!--TextView android:layout_width="fill_parent" android:id="@+id/windTextView" /-->
         </TableRow>
         <TableRow
             android:layout_width="match_parent"

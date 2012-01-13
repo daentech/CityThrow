@@ -1,5 +1,7 @@
 package uk.co.daentech.citythrow;
 
+import java.util.Random;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -51,6 +53,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
     private float maxForce = 0;
 
 	private float mAttackAngle;
+	private double mWindStrength;
     
     @Override
     public void onCreate(Bundle bundle){
@@ -77,15 +80,24 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         tv.setText(mChar.getHP() + "/100");
         tv = (TextView)findViewById(R.id.distanceTextView);
         tv.setText(getDistance());
+        ProgressBar pb = (ProgressBar)findViewById(R.id.windProgress);
+        pb.setProgress(getWind());
         angleText = (TextView)findViewById(R.id.angleText);
         
         Button btn = (Button)findViewById(R.id.btnAttackLaunch);
         btn.setOnClickListener(this);
         angleBar = (ProgressBar)findViewById(R.id.directionProgress);
         
+        
     }
 
-    private String getDistance() {
+    private int getWind() {
+		Random rnd = new Random();
+		mWindStrength = (rnd.nextFloat() - 0.5) * 2;
+		return  (int)(mWindStrength*1000) + 500;
+	}
+
+	private String getDistance() {
         GeoPoint enemyposition = mChar.getPoint();
         GeoPoint userposition = CityThrowActivity.characters.get(0).getPoint();
         Location userLoc = new Location("User");
@@ -146,6 +158,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         			Intent mIntent = new Intent();
         			mIntent.putExtra("AttackAngle", mAttackAngle);
         			mIntent.putExtra("AttackForce", progressDialog.getProgress());
+        			mIntent.putExtra("WindStrength", mWindStrength);
         			progressDialog.dismiss();
         			setResult(RESULT_OK, mIntent);
         			this.finish();
@@ -198,7 +211,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
     private double scaleAngle(double a, int max){
         double scalar = 1000/(2*Math.PI);
         
-        return 500 + a * scalar;
+        return 500 - a * scalar;
     }
 
 	@Override

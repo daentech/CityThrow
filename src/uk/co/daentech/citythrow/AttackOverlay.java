@@ -39,4 +39,8 @@ public class AttackOverlay extends ItemizedOverlay<OverlayItem> {
         addItem(p);
     }
 
+	public GeoPoint getProjectilePoint() {
+		return items.get(0).getPoint();
+	}
+
 }
