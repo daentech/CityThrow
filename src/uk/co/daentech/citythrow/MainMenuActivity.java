@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -24,9 +26,21 @@ public class MainMenuActivity extends Activity implements OnClickListener{
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
-		super.onCreateOptionsMenu(menu);
-		
-		return false;
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.optionsmenu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.instructionsoption:
+	        startActivity(new Intent(this,InstructionsActivity.class));
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
 	}
 	
 	public void onClick(View v) {

@@ -11,6 +11,9 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -197,5 +200,23 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         
         return 500 + a * scalar;
     }
-    
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu){
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.optionsmenu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.instructionsoption:
+	        startActivity(new Intent(this,InstructionsActivity.class));
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
 }

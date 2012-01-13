@@ -18,6 +18,10 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
+
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 public class CityThrowActivity extends MapActivity implements LocationListener,
@@ -50,6 +54,7 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
         mv.setBuiltInZoomControls(true);
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        
         Location loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         if (loc == null) {
@@ -57,13 +62,13 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
         }
 
         if (loc == null) {
-            lng = 51.4557f;
-            lat = -2.6028f;
+            lat = 51.4557f;
+            lng = -2.6028f;
         } else {
             lat = (float) loc.getLatitude();
             lng = (float) loc.getLongitude();
         }
-
+        
         p = new GeoPoint((int) (lat * 1000000), (int) (lng * 1000000));
         mv.setSatellite(true);
         // get MapController that helps to set/get location, zoom etc.
@@ -205,4 +210,23 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
             }
         }
     }
+	
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu){
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.optionsmenu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.instructionsoption:
+	        startActivity(new Intent(this,InstructionsActivity.class));
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
 }
