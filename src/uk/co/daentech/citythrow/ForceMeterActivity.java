@@ -122,11 +122,12 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         if (val[0] == 0.0) return;
         else if (progressDialog != null && !progressDialog.isShowing()) Log.d("Orientation:",val[0] + "");
         
-        double diffAngle = (( mAngle - val[0] + Math.PI ) %  2*Math.PI ) - Math.PI ;
+        double diffAngle = (( mAngle - val[0] + Math.PI) % (Math.PI * 2)) - Math.PI ;
+
         if (!sensing){
         	mAttackAngle = val[0];
             angleBar.setProgress((int)(scaleAngle(diffAngle,1000)));
-            angleText.setText("Angle Difference: " + diffAngle + " Value: " + angleBar.getProgress());
+            angleText.setText("Compass Angle: " + val[0] + "\nExpected Angle: " + mAngle + "\nDifference: " + diffAngle +"\nValue: " + angleBar.getProgress());
         } else {
         	// Check we have the dialog open
         	if (progressDialog.isShowing()){

@@ -14,6 +14,8 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
         public static final int marker=0x7f020001;
         public static final int mymarker=0x7f020002;
+        public static final int projectile=0x7f020003;
+        public static final int semitrans=0x7f020004;
     }
     public static final class id {
         public static final int angleText=0x7f050001;
@@ -23,6 +25,7 @@ public final class R {
         public static final int hpTextView=0x7f050003;
         public static final int mapview=0x7f050007;
         public static final int nameTextView=0x7f050002;
+        public static final int txtShowAttackInfo=0x7f050008;
         public static final int windTextView=0x7f050005;
     }
     public static final class layout {
