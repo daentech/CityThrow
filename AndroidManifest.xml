@@ -16,13 +16,23 @@
         android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
         <activity
-            android:name=".CityThrowActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
+            android:name=".MainMenuActivity"
+            android:label="City Throw"
+            >
+        	<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
+        </activity>
+        <activity
+            android:name=".InstructionsActivity"
+            android:label="Instructions">
+		</activity>
+        <activity
+            android:name=".CityThrowActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity android:name=".ForceMeterActivity"></activity>
     </application>

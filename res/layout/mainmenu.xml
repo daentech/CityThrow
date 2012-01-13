@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    >
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/sky_background"
+        android:scaleType="centerCrop"
+        android:contentDescription="Sky Background" />
+	<ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dip"
+        android:layout_marginLeft="50dip"
+        android:layout_marginRight="50dip"
+        android:contentDescription="Logo" 
+        android:id="@+id/logo"/>
+	
+	<ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/start"
+        android:id="@+id/start"
+        android:layout_below="@id/logo"
+        android:layout_marginTop="30dip"
+        android:layout_marginLeft="70dip"
+        android:layout_marginRight="70dip"
+        android:contentDescription="Start Game"
+        android:clickable="true" />
+	<ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/instructions"
+        android:layout_below="@id/start"
+        android:src="@drawable/instructions"
+        android:layout_marginTop="30dip"
+        android:layout_marginLeft="70dip"
+        android:layout_marginRight="70dip"
+        android:contentDescription="Instructions"
+        android:clickable="true" />
+	
+	
+    
+</RelativeLayout>
