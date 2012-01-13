@@ -21,6 +21,7 @@ public final class R {
         public static final int semitrans=0x7f020007;
         public static final int sky_background=0x7f020008;
         public static final int start=0x7f020009;
+        public static final int won=0x7f02000a;
     }
     public static final class id {
         public static final int angleText=0x7f060001;
@@ -29,12 +30,13 @@ public final class R {
         public static final int directionProgress=0x7f060000;
         public static final int distanceTextView=0x7f060004;
         public static final int hpTextView=0x7f060003;
-        public static final int instructions=0x7f06000c;
-        public static final int instructionsoption=0x7f06000d;
-        public static final int logo=0x7f06000a;
+        public static final int imgWinText=0x7f06000a;
+        public static final int instructions=0x7f06000d;
+        public static final int instructionsoption=0x7f06000e;
+        public static final int logo=0x7f06000b;
         public static final int mapview=0x7f060008;
         public static final int nameTextView=0x7f060002;
-        public static final int start=0x7f06000b;
+        public static final int start=0x7f06000c;
         public static final int txtShowAttackInfo=0x7f060009;
         public static final int windProgress=0x7f060005;
     }

@@ -12,17 +12,19 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.TextView;
 
 public class CityThrowActivity extends MapActivity implements LocationListener,
 		OnClickListener {
@@ -36,7 +38,8 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
 	public static ArrayList<Character> characters;
 
 	private TextView mAttackInfo;
-	private static float sAttackAngle;
+	private ImageView mWinText;
+	private static double sAttackAngle;
 	private static int sAttackForce;
 	private AttackOverlay mAttackOverlay;
 	private List<Overlay> list;
@@ -50,6 +53,9 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
 		mAttackInfo = (TextView) findViewById(R.id.txtShowAttackInfo);
 		mAttackInfo.setText("Select an enemy (blue) to attack!");
 
+		mWinText = (ImageView) findViewById(R.id.imgWinText);
+		mWinText.setVisibility(View.INVISIBLE);
+		
 		MapView mv = (MapView) findViewById(R.id.mapview);
 
 		mv.setBuiltInZoomControls(true);
@@ -191,7 +197,7 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
 			else if (resultCode == RESULT_OK) {
 				Bundle extras = data.getExtras();
 				if (extras != null) {
-					sAttackAngle = extras.getFloat("AttackAngle");
+					sAttackAngle = extras.getDouble("AttackAngle");
 					sAttackForce = extras.getInt("AttackForce");
 					sWindStrength = extras.getDouble("WindStrength");
 					mAttackInfo.setText("Attack Force: " + sAttackForce
@@ -212,26 +218,17 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
 											.get(0).getPoint());
 							mAttackOverlay
 							.addItem(impact);
-							while (impact.getLatitudeE6() != mAttackOverlay
-									.getProjectilePoint().getLatitudeE6()
-									&& impact.getLongitudeE6() != mAttackOverlay
-											.getProjectilePoint()
-											.getLongitudeE6()) {
-
-							}
-						}
-
-						private GeoPoint getImpact(float sAttackAngle,
-								int sAttackForce, double sWindStrength,
-								GeoPoint origin) {
-							double newAngle = sAttackAngle + sWindStrength;
-							GeoPoint destination = new GeoPoint((int) (origin
-									.getLatitudeE6() + sAttackForce / 700
-									* Math.cos(newAngle) * 5E4), (int) (origin
-									.getLongitudeE6() + sAttackForce / 700
-									* Math.sin(newAngle) * 5E4));
-
-							return destination;
+							//while (impact.getLatitudeE6() != mAttackOverlay
+							//		.getProjectilePoint().getLatitudeE6()
+							//		&& impact.getLongitudeE6() != mAttackOverlay
+							//				.getProjectilePoint()
+							//				.getLongitudeE6()) {
+								
+							//}
+							
+							checkDamage(impact);
+							checkKill();
+							checkWin();
 						}
 					}).start();
 
@@ -240,6 +237,21 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
 		}
 	}
 
+	private GeoPoint getImpact(double sAttackAngle,
+			int sAttackForce, double sWindStrength,
+			GeoPoint origin) {
+		double newAngle = sAttackAngle + sWindStrength/20;
+		double angleResult = Math.cos(newAngle);
+		float ForceTest = (float)(sAttackForce / 600)	* (float)Math.cos(newAngle) * (float)5E4;
+		GeoPoint destination = new GeoPoint((int) (origin
+				.getLatitudeE6() + (sAttackForce / 600)
+				* Math.cos(newAngle) * 5E4), (int) (origin
+				.getLongitudeE6() + sAttackForce / 600
+				* Math.sin(newAngle) * 5E4));
+
+		return destination;
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -256,6 +268,52 @@ public class CityThrowActivity extends MapActivity implements LocationListener,
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	public void checkDamage(GeoPoint projectile){
+		for(int i = 1; i < characters.size(); i++){
+			// For all characters except the user
+			
+			GeoPoint p = characters.get(i).getPoint();
+			double distance = Math.sqrt(Math.pow(projectile.getLatitudeE6() - p.getLatitudeE6(),2) + Math.pow(projectile.getLongitudeE6() - p.getLongitudeE6(), 2));
+			if (distance < 1000) {
+				characters.get(i).updateHP((int)((1000 - distance) / 10));
+				
+				Context context = getApplicationContext();
+				CharSequence text = "You did " + ((int)(1000-distance)/10) + " to " + characters.get(i).getName();
+				int duration = Toast.LENGTH_SHORT;
+
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.show();
+			}
+		}
+	}
+	
+	public void checkKill(){
+		
+		for (int i = 1; i < characters.size(); i++){
+			if(characters.get(i).getHP() <= 0){
+				// Character is dead
+				
+				//Display kill toast
+				Context context = getApplicationContext();
+				CharSequence text = "You killed " + characters.get(i).getName();
+				int duration = Toast.LENGTH_SHORT;
+
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.show();
+				
+				// Remove character from overlay
+				myLocationOverlay.removeCharacter(i);
+			}
+		}
+	}
+	
+	public void checkWin(){
+		if(characters.size() == 1 && characters.get(0).getType() == Character.type.ME){
+			// If there is one character left and it is me, say I've won;
+			mWinText.setVisibility(View.VISIBLE);
 		}
 	}
 }

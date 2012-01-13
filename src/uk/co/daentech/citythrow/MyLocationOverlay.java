@@ -109,4 +109,10 @@ public class MyLocationOverlay extends ItemizedOverlay<OverlayItem> {
         }
         populate();
     }
+
+	public void removeCharacter(int i) {
+		mOverlays.remove(i);
+		CityThrowActivity.characters.remove(i);
+		populate();
+	}
 }

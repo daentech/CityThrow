@@ -24,4 +24,14 @@
             android:text="Attack Force:\n Attack Angle:"
             />
         </LinearLayout>
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/won"
+            android:layout_below="@id/txtShowAttackInfo"
+            android:layout_marginTop="100dip"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:contentDescription="Win Image"
+            android:id="@+id/imgWinText" />
 </RelativeLayout>

@@ -46,13 +46,13 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
     private TextView angleText;
     
     public static int sAttackForce;
-	public static float sAttackAngle;
+	public static double sAttackAngle;
 	
     private float[] mAccelV = null;
     private float[] mMagnetV = null;
     private float maxForce = 0;
 
-	private float mAttackAngle;
+	private double mAttackAngle;
 	private double mWindStrength;
     
     @Override
@@ -72,7 +72,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         
         double dlat = mChar.getPoint().getLatitudeE6() - player.getPoint().getLatitudeE6();
         double dlon = mChar.getPoint().getLongitudeE6() - player.getPoint().getLongitudeE6();
-        mAngle = Math.atan2(dlat, dlon); // in radians
+        mAngle = (Math.atan2(dlat, dlon)) % (Math.PI * 2); // in radians. //Subtract PI/2 to correct for north being 0 on compass
         
         TextView tv = (TextView)findViewById(R.id.nameTextView);
         tv.setText("" + mChar.getName());
@@ -154,7 +154,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         			// Assume swing finished
         			progressDialog.setProgress((int)(1000/20 * maxForce));
         			ForceMeterActivity.sAttackAngle = mAttackAngle;
-        			ForceMeterActivity.sAttackForce = progressDialog.getProgress();
+        			ForceMeterActivity.sAttackForce = (int) (1000/20 * maxForce);
         			Intent mIntent = new Intent();
         			mIntent.putExtra("AttackAngle", mAttackAngle);
         			mIntent.putExtra("AttackForce", progressDialog.getProgress());
