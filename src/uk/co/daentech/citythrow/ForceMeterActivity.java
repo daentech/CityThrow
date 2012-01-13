@@ -82,7 +82,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         tv.setText(getDistance());
         ProgressBar pb = (ProgressBar)findViewById(R.id.windProgress);
         pb.setProgress(getWind());
-        angleText = (TextView)findViewById(R.id.angleText);
+        //angleText = (TextView)findViewById(R.id.angleText);
         
         Button btn = (Button)findViewById(R.id.btnAttackLaunch);
         btn.setOnClickListener(this);
@@ -108,7 +108,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         enemyLoc.setLongitude(enemyposition.getLongitudeE6() / 1E6);
         double distance = userLoc.distanceTo(enemyLoc);
         
-        return distance + "m";
+        return (int)distance + "m";
     }
 
     public void onAccuracyChanged(Sensor arg0, int arg1) {
@@ -142,7 +142,7 @@ public class ForceMeterActivity extends Activity implements OnClickListener, Sen
         if (!sensing){
         	mAttackAngle = val[0];
             angleBar.setProgress((int)(scaleAngle(diffAngle,1000)));
-            angleText.setText("Compass Angle: " + val[0] + "\nExpected Angle: " + mAngle + "\nDifference: " + diffAngle +"\nValue: " + angleBar.getProgress());
+            //angleText.setText("Compass Angle: " + val[0] + "\nExpected Angle: " + mAngle + "\nDifference: " + diffAngle +"\nValue: " + angleBar.getProgress());
         } else {
         	// Check we have the dialog open
         	if (progressDialog.isShowing()){

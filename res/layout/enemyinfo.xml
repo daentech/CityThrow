@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
     <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
             <SeekBar
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -19,46 +19,50 @@
                 android:layout_span="2"/>
         </TableRow>
          <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                android:scaleType="center"
+                android:contentDescription="Marker Middle"
+                android:src="@drawable/arrow_marker"
+                android:layout_gravity="center"
+                android:maxWidth="50dip"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_span="2"
-                android:id="@+id/angleText"
+                android:text="Centre the slider on the arrow to aim straight"
                 />
         </TableRow>
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_span="2"
-                android:text="Centre the slider to aim straight"
-                />
-        </TableRow>
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
             <TextView android:layout_width="fill_parent" android:text="Name: "/>
             <TextView android:layout_width="fill_parent" android:id="@+id/nameTextView" />
         </TableRow>
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
             <TextView android:layout_width="fill_parent" android:text="HP Remaining: "/>
             <TextView android:layout_width="fill_parent" android:id="@+id/hpTextView" />
         </TableRow>
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
             <TextView android:layout_width="fill_parent" android:text="Distance (m): "/>
             <TextView android:layout_width="fill_parent" android:id="@+id/distanceTextView" />
         </TableRow>
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
             <TextView android:layout_width="fill_parent" android:text="Wind Speed: "/>
             <ProgressBar
                 android:layout_width="fill_parent"
@@ -71,9 +75,9 @@
             <!--TextView android:layout_width="fill_parent" android:id="@+id/windTextView" /-->
         </TableRow>
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <Button android:id="@+id/btnAttackLaunch" android:text="Launch Attack!" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            <Button android:id="@+id/btnAttackLaunch" android:layout_span="2" android:text="Launch Attack!" />
         </TableRow>
     </TableLayout>
 
